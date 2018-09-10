@@ -18,7 +18,7 @@ You can use [CocoaPods](https://cocoapods.org) to integrate DataKit with your pr
 
 Simply add the following line to your `Podfile`:
 ```ruby
-pod "DataKit"
+pod "AUCoreDataKit"
 ```
 
 And run `pod update` in your project directory.
@@ -37,7 +37,7 @@ $ brew install carthage
 To integrate NetKit into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```yaml
-github "azizuysal/DataKit"
+github "azizuysal/AUCoreDataKit"
 ```
 
 Run `carthage update` to build the framework and drag the built `DataKit.framework` into your Xcode project.

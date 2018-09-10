@@ -1,0 +1,9 @@
+platform :ios, '11.0'
+workspace '../../DataKit'
+
+use_frameworks!
+inhibit_all_warnings!
+
+target 'DataKitExample' do
+  pod 'NetKit'
+end

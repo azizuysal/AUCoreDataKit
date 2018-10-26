@@ -1,6 +1,8 @@
-language: swift
+language: objective-c
+osx_image: xcode10
+
 xcode_workspace: DataKit.xcworkspace
 xcode_scheme:
   - DataKit
   - DataKitExample
-xcode_sdk: iphonesimulator11.4
+xcode_sdk: iphonesimulator12.0

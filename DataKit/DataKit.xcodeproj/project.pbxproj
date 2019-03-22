@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8F006AA3224566E700AEE163 /* JsonLoadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F006AA2224566E700AEE163 /* JsonLoadable.swift */; };
 		8F5B7EF320891B2700381311 /* DataKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F5B7EF120891B2700381311 /* DataKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8F5B7EFA20891B6E00381311 /* DataKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F5B7EF920891B6E00381311 /* DataKit.swift */; };
 		8FA31EB12183C8DE00771FB8 /* DataKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA31EB02183C8DE00771FB8 /* DataKitTests.swift */; };
@@ -24,6 +25,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8F006AA2224566E700AEE163 /* JsonLoadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonLoadable.swift; sourceTree = "<group>"; };
+		8F006AA42245707D00AEE163 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		8F006AA52245707D00AEE163 /* AUCoreDataKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = AUCoreDataKit.podspec; path = ../AUCoreDataKit.podspec; sourceTree = "<group>"; };
+		8F006AA62245707D00AEE163 /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = LICENSE.md; path = ../LICENSE.md; sourceTree = "<group>"; };
 		8F5B7EEE20891B2700381311 /* DataKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DataKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F5B7EF120891B2700381311 /* DataKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataKit.h; sourceTree = "<group>"; };
 		8F5B7EF220891B2700381311 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -55,6 +60,9 @@
 		8F5B7EE420891B2700381311 = {
 			isa = PBXGroup;
 			children = (
+				8F006AA52245707D00AEE163 /* AUCoreDataKit.podspec */,
+				8F006AA62245707D00AEE163 /* LICENSE.md */,
+				8F006AA42245707D00AEE163 /* README.md */,
 				8F5B7EF020891B2700381311 /* DataKit */,
 				8FA31EAF2183C8DE00771FB8 /* DataKitTests */,
 				8F5B7EEF20891B2700381311 /* Products */,
@@ -74,6 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				8F5B7EF920891B6E00381311 /* DataKit.swift */,
+				8F006AA2224566E700AEE163 /* JsonLoadable.swift */,
 				8F5B7EF120891B2700381311 /* DataKit.h */,
 				8F5B7EF220891B2700381311 /* Info.plist */,
 			);
@@ -199,6 +208,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8F5B7EFA20891B6E00381311 /* DataKit.swift in Sources */,
+				8F006AA3224566E700AEE163 /* JsonLoadable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,6 +289,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -335,6 +346,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 4.2;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -362,7 +374,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -387,7 +398,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.azizuysal.DataKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -406,7 +416,6 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.azizuysal.DataKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -424,7 +433,6 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.azizuysal.DataKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

@@ -9,73 +9,15 @@
 import Foundation
 import CoreData
 
-public protocol JsonLoadable: IDataKit where LoadableObject: JsonLoadable {
-  associatedtype LoadableObject
-  func loadFromJson(_ json: [AnyHashable:Any])
-}
-
-extension JsonLoadable {
-  public static func insertOrUpdateOne<T: Hashable & Equatable & Comparable>(_ json: [AnyHashable:Any], in context: NSManagedObjectContext, idKey: String, idColumn: String, idType: T.Type) {
-    context.performAndWait {
-      let dictId = json[idKey] as! T
-      let valArg = T.self is String.Type ? "@" : "d"
-      let predicate = NSPredicate(format: "%K == %\(valArg)", idColumn, dictId as! CVarArg)
-      var record = Self.all(in: context, predicate: predicate).first as? LoadableObject
-      if record == nil {
-        record = Self.new(in: context) as? LoadableObject
-        record?.setValue(dictId, forKey: idColumn)
-      }
-      record?.loadFromJson(json)
-      record?.save(in: context)
-    }
-  }
-    
-  public static func insertOrUpdateMany<T: Hashable & Equatable & Comparable>(_ json: [[AnyHashable:Any]], in context: NSManagedObjectContext, idKey: String, idColumn: String, idType: T.Type) {
-    context.performAndWait {
-      var input = json.sorted {
-        return ($0[idKey] as! T) < ($1[idKey] as! T)
-        }.makeIterator()
-      var existing = Self.all(in: context, sortDescriptors: [NSSortDescriptor(key: idColumn, ascending: true)]).makeIterator()
-      
-      var inputDict = input.next()
-      var record = existing.next()
-      while let dict = inputDict {
-        guard let dictId = dict[idKey] as? T else {
-          inputDict = input.next()
-          continue
-        }
-        let recordId = record?.value(forKey: idColumn) as? T
-        if recordId == nil || dictId < recordId! {
-          let newRecord = Self.new(in: context)
-          newRecord.loadFromJson(dict)
-          newRecord.save(in: context)
-          inputDict = input.next()
-        } else if dictId == recordId! {
-          record?.loadFromJson(dict)
-          record?.save(in: context)
-          inputDict = input.next()
-          record = existing.next()
-        } else {
-          record?.delete()
-          record = existing.next()
-        }
-      }
-      while let extraRecord = existing.next() {
-        extraRecord.delete()
-      }
-    }
-  }
-}
-
-// MARK: -
-
-public protocol IDataKit where Self: NSObject {
-  associatedtype DataObject
+public protocol IDataKit where Self: (NSObject & NSFetchRequestResult) {
+  associatedtype DataObject: (NSObject & NSFetchRequestResult)
+  static func fetchController(in context: NSManagedObjectContext, predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?, sectionNameKeyPath: String?, cacheName: String?) -> NSFetchedResultsController<DataObject>
   static func count(in context: NSManagedObjectContext, predicate: NSPredicate?) -> Int
   static func all(in context: NSManagedObjectContext, predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?) -> [DataObject]
   static func allAsync(in context: NSManagedObjectContext, predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?, completion: @escaping NSPersistentStoreAsynchronousFetchResultCompletionBlock)
   static func new(in context: NSManagedObjectContext) -> Self
-  func save(in context: NSManagedObjectContext)
+  func save(in context: NSManagedObjectContext, wait: Bool)
+  static func saveAll(in context: NSManagedObjectContext, wait: Bool)
   func delete()
   static func deleteAll(in context: NSManagedObjectContext)
   static func execute(execute: @escaping (_ context: NSManagedObjectContext)->())
@@ -84,6 +26,20 @@ public protocol IDataKit where Self: NSObject {
 }
 
 extension IDataKit {
+  
+  public static func fetchController(in context: NSManagedObjectContext = DataKit.mainContext, predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil, sectionNameKeyPath: String? = nil, cacheName: String? = nil) -> NSFetchedResultsController<DataObject> {
+    let entityName = (NSStringFromClass(self) as NSString).pathExtension
+    let fetch = NSFetchRequest<DataObject>(entityName: entityName)
+    fetch.predicate = predicate
+    fetch.sortDescriptors = sortDescriptors
+    let controller = NSFetchedResultsController(fetchRequest: fetch, managedObjectContext: context, sectionNameKeyPath: sectionNameKeyPath, cacheName: cacheName)
+    do {
+      try controller.performFetch()
+    } catch {
+      assert(true, "Failed to perform fetch in context with error: \(error)")
+    }
+    return controller
+  }
   
   public static func count(in context: NSManagedObjectContext = DataKit.mainContext, predicate: NSPredicate? = nil) -> Int {
     var result = 0
@@ -152,8 +108,12 @@ extension IDataKit {
     return new as! Self
   }
   
-  public func save(in context: NSManagedObjectContext = DataKit.mainContext) {
-    context.saveAllAndWait()
+  public func save(in context: NSManagedObjectContext = DataKit.mainContext, wait: Bool = true) {
+    context.saveAll(wait: wait)
+  }
+  
+  public static func saveAll(in context: NSManagedObjectContext = DataKit.mainContext, wait: Bool = true) {
+    context.saveAll(wait: wait)
   }
   
   public func delete() {
@@ -224,17 +184,21 @@ extension NSManagedObjectContext {
     }
   }
   
-  private func saveAll() {
-    save(wait: false)
-  }
+//  private func saveAll() {
+//    save(wait: false)
+//  }
+//
+//  func saveAllAndWait() {
+//    save(wait: true)
+//    if name == "background" {
+//      DataKit.mainContext.saveAllAndWait()
+//    } else if name == "main" {
+//      DataKit.privateContext.saveAll()
+//    }
+//  }
   
-  func saveAllAndWait() {
-    save(wait: true)
-    if name == "background" {
-      DataKit.mainContext.saveAllAndWait()
-    } else if name == "main" {
-      DataKit.privateContext.saveAll()
-    }
+  func saveAll(wait: Bool) {
+    save(wait: wait)
   }
 }
 

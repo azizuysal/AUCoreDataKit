@@ -9,9 +9,11 @@
 import Foundation
 import CoreData
 
+extension NSManagedObject: IDataKit { public typealias DataObject = NSManagedObject }
+
 public protocol IDataKit: NSFetchRequestResult where Self: NSObject {
   associatedtype DataObject where DataObject: NSFetchRequestResult
-  static func fetchController(in context: NSManagedObjectContext, predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?, sectionNameKeyPath: String?, cacheName: String?) -> NSFetchedResultsController<DataObject>
+  static func fetchController(in context: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor], predicate: NSPredicate?, sectionNameKeyPath: String?, cacheName: String?) -> NSFetchedResultsController<DataObject>
   static func count(in context: NSManagedObjectContext, predicate: NSPredicate?) -> Int
   static func all(in context: NSManagedObjectContext, predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?) -> [DataObject]
   static func allAsync(in context: NSManagedObjectContext, predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?, completion: @escaping NSPersistentStoreAsynchronousFetchResultCompletionBlock)
@@ -27,8 +29,8 @@ public protocol IDataKit: NSFetchRequestResult where Self: NSObject {
 
 extension IDataKit {
   
-  public static func fetchController(in context: NSManagedObjectContext = DataKit.mainContext, predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil, sectionNameKeyPath: String? = nil, cacheName: String? = nil) -> NSFetchedResultsController<Self> {
-    let entityName = (NSStringFromClass(self) as NSString).pathExtension
+  public static func fetchController(in context: NSManagedObjectContext = DataKit.mainContext, sortDescriptors: [NSSortDescriptor], predicate: NSPredicate? = nil, sectionNameKeyPath: String? = nil, cacheName: String? = nil) -> NSFetchedResultsController<Self> {
+    let entityName = NSStringFromClass(self)
     let fetch = NSFetchRequest<Self>(entityName: entityName)
     fetch.predicate = predicate
     fetch.sortDescriptors = sortDescriptors
@@ -45,7 +47,7 @@ extension IDataKit {
     var result = 0
     context.performAndWait {
       let entityName = NSStringFromClass(self)
-      let request = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+      let request = NSFetchRequest<Self>(entityName: entityName)
       request.predicate = predicate
       request.includesSubentities = false
       do {
@@ -59,7 +61,7 @@ extension IDataKit {
   
   public static func all(in context: NSManagedObjectContext = DataKit.mainContext, predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil) -> [Self] {
     let entityName = NSStringFromClass(self)
-    let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+    let fetch = NSFetchRequest<Self>(entityName: entityName)
     fetch.predicate = predicate
     fetch.sortDescriptors = sortDescriptors
     fetch.returnsObjectsAsFaults = false
@@ -67,7 +69,7 @@ extension IDataKit {
     var results = [Self]()
     let query = { (context: NSManagedObjectContext) -> () in
       do {
-        results = try context.fetch(fetch) as? [Self] ?? []
+        results = try context.fetch(fetch)
       } catch let error as NSError {
         assert(true, "Failed to fetch all records in context with error: \(error)")
         results = []
@@ -201,8 +203,6 @@ extension NSManagedObjectContext {
     save(wait: wait)
   }
 }
-
-extension NSManagedObject: IDataKit { public typealias DataObject = NSManagedObject }
 
 // MARK: -
 

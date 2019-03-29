@@ -12,9 +12,13 @@ import CoreData
 
 class TableViewController: UITableViewController {
   
+  private let USE_FRC = false
+  
   private let group = DispatchGroup()
   private let session = URLSession(configuration: .ephemeral)
   private var stories: [Story] = []
+  
+  private var frc: NSFetchedResultsController<Story>!
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -27,14 +31,22 @@ class TableViewController: UITableViewController {
       return config
     })
     
+    if USE_FRC {
+      let sortDescriptor = NSSortDescriptor(key: "time", ascending: false)
+      frc = Story.fetchController(sortDescriptors: [sortDescriptor], cacheName: "TableViewController.storyCache")
+      frc.delegate = self
+    }
+    
     getNews() { error in
       print("Done loading stories")
       if let error  = error {
         print(error)
       }
-      Story.allAsync() { result in
-        self.stories = result.finalResult as? [Story] ?? []
-        self.tableView.reloadSections(IndexSet(integersIn: 0..<self.tableView.numberOfSections), with: .automatic)
+      if !self.USE_FRC {
+        Story.allAsync() { result in
+          self.stories = result.finalResult as? [Story] ?? []
+          self.tableView.reloadSections(IndexSet(integersIn: 0..<self.tableView.numberOfSections), with: .automatic)
+        }
       }
     }
   }
@@ -104,3 +116,14 @@ class TableViewController: UITableViewController {
     }.resume()
   }
 }
+
+extension TableViewController: NSFetchedResultsControllerDelegate {
+  
+  func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    print("controllerDidChangeContent")
+    stories = frc.fetchedObjects ?? []
+//    tableView.reloadSections(IndexSet(integersIn: 0..<tableView.numberOfSections), with: .automatic)
+    tableView.reloadData()
+  }
+}
+

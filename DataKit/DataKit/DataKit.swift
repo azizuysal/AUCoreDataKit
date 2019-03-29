@@ -9,8 +9,8 @@
 import Foundation
 import CoreData
 
-public protocol IDataKit where Self: (NSObject & NSFetchRequestResult) {
-  associatedtype DataObject: (NSObject & NSFetchRequestResult)
+public protocol IDataKit: NSFetchRequestResult where Self: NSObject {
+  associatedtype DataObject where DataObject: NSFetchRequestResult
   static func fetchController(in context: NSManagedObjectContext, predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?, sectionNameKeyPath: String?, cacheName: String?) -> NSFetchedResultsController<DataObject>
   static func count(in context: NSManagedObjectContext, predicate: NSPredicate?) -> Int
   static func all(in context: NSManagedObjectContext, predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?) -> [DataObject]
@@ -27,9 +27,9 @@ public protocol IDataKit where Self: (NSObject & NSFetchRequestResult) {
 
 extension IDataKit {
   
-  public static func fetchController(in context: NSManagedObjectContext = DataKit.mainContext, predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil, sectionNameKeyPath: String? = nil, cacheName: String? = nil) -> NSFetchedResultsController<DataObject> {
+  public static func fetchController(in context: NSManagedObjectContext = DataKit.mainContext, predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil, sectionNameKeyPath: String? = nil, cacheName: String? = nil) -> NSFetchedResultsController<Self> {
     let entityName = (NSStringFromClass(self) as NSString).pathExtension
-    let fetch = NSFetchRequest<DataObject>(entityName: entityName)
+    let fetch = NSFetchRequest<Self>(entityName: entityName)
     fetch.predicate = predicate
     fetch.sortDescriptors = sortDescriptors
     let controller = NSFetchedResultsController(fetchRequest: fetch, managedObjectContext: context, sectionNameKeyPath: sectionNameKeyPath, cacheName: cacheName)

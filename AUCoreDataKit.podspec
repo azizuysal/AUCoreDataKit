@@ -1,4 +1,5 @@
 Pod::Spec.new do |s|
+
 s.name             = "AUCoreDataKit"
 s.version          = "1.0.3.0"
 s.summary          = "An easy to use CoreData wrapper in Swift."
@@ -11,8 +12,6 @@ s.source           = { :git => "https://github.com/azizuysal/AUCoreDataKit.git",
 s.platform         = :ios, "11.0"
 s.requires_arc     = true
 s.swift_version    = "5.0"
-
-# If more than one source file: https://guides.cocoapods.org/syntax/podspec.html#source_files
 s.source_files = "DataKit/DataKit/*.{swift}"
 
 end

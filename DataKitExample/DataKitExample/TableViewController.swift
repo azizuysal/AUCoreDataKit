@@ -81,7 +81,7 @@ class TableViewController: UITableViewController {
   
   private func getNews(_ done: @escaping DownloadFinishedHandler) {
     session.dataTask(with: URL(string: "https://hacker-news.firebaseio.com/v0/topstories.json")!) { (data, response, error) in
-      guard let data = data, let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [Int32], let stories = json else {
+      guard let data = data, let stories = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [Int32] else {
         print("News download failed - HTTP \((response as! HTTPURLResponse).statusCode)")
         done(error)
         return
@@ -102,7 +102,7 @@ class TableViewController: UITableViewController {
   private func getStory(_ id: Int32, done: DownloadFinishedHandler? = nil) {
     group.enter()
     session.dataTask(with: URL(string: "https://hacker-news.firebaseio.com/v0/item/\(id).json")!) { (data, response, error) in
-      guard let data = data, let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [AnyHashable:Any], let storyJson = json else {
+      guard let data = data, let storyJson = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [AnyHashable:Any] else {
         print("Story download failed - HTTP \((response as? HTTPURLResponse)?.statusCode ?? 0)")
         done?(error)
         self.group.leave()

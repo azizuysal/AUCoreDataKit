@@ -1,4 +1,4 @@
-[![Language](https://img.shields.io/badge/Swift-4.1-orange.svg)](http://swift.org)
+[![Language](https://img.shields.io/badge/Swift-5.0-orange.svg)](http://swift.org)
 [![CocoaPods compatible](https://img.shields.io/badge/CocoaPods-compatible-brightgreen.svg)](https://cocoapods.org)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
@@ -8,7 +8,7 @@ An easy to use CoreData wrapper in Swift.
 
 ## Requirements
 
-DataKit requires Swift 4.1 and Xcode 9.4.
+DataKit requires Swift 5.0 and Xcode 10.2.
 
 ## Installation
 

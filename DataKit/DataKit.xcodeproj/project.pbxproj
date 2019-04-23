@@ -28,7 +28,6 @@
 		8F006AA2224566E700AEE163 /* JsonLoadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonLoadable.swift; sourceTree = "<group>"; };
 		8F006AA42245707D00AEE163 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		8F006AA52245707D00AEE163 /* AUCoreDataKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = AUCoreDataKit.podspec; path = ../AUCoreDataKit.podspec; sourceTree = "<group>"; };
-		8F006AA62245707D00AEE163 /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = LICENSE.md; path = ../LICENSE.md; sourceTree = "<group>"; };
 		8F5B7EEE20891B2700381311 /* DataKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DataKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F5B7EF120891B2700381311 /* DataKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataKit.h; sourceTree = "<group>"; };
 		8F5B7EF220891B2700381311 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -61,7 +60,6 @@
 			isa = PBXGroup;
 			children = (
 				8F006AA52245707D00AEE163 /* AUCoreDataKit.podspec */,
-				8F006AA62245707D00AEE163 /* LICENSE.md */,
 				8F006AA42245707D00AEE163 /* README.md */,
 				8F5B7EF020891B2700381311 /* DataKit */,
 				8FA31EAF2183C8DE00771FB8 /* DataKitTests */,
@@ -160,7 +158,7 @@
 				TargetAttributes = {
 					8F5B7EED20891B2700381311 = {
 						CreatedOnToolsVersion = 9.3;
-						LastSwiftMigration = 0930;
+						LastSwiftMigration = 1020;
 					};
 					8FA31EAD2183C8DE00771FB8 = {
 						CreatedOnToolsVersion = 10.0;
@@ -173,6 +171,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 8F5B7EE420891B2700381311;
 			productRefGroup = 8F5B7EEF20891B2700381311 /* Products */;
@@ -374,6 +373,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -398,6 +398,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.azizuysal.DataKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

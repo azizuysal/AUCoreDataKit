@@ -49,17 +49,24 @@ You can integrate DataKit manually into your project simply by dragging `DataKit
 
 ## Usage
 
-Configure DataKit to use the CoreData model you created in Xcode:
+Optionally configure DataKit if the defaults are not suitable for your use case. DataKit automatically merges and uses CoreData models created in Xcode and uses Application name to name its database file:
 
 ```swift
 DataKit.configure({
     var config = DataKit.Configuration()
-    config.dbModel = NSManagedObjectModel(contentsOf: Bundle.main.url(forResource: "DataModel", withExtension: "momd")!)!
-      return config
-    })
+    config.dbUrl = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!.appendingPathComponent("test.db")
+    return config
+})
 ```
 
-And then you can start using convenient methods on your model classes to interact with core data store:
+You must call this method once to load data stores for CoreData. You can start using DataKit as soon as the data stores are loaded in the callback. If there was an error, the error parameter will contain the details.
+```swift
+DataKit.loadStores { error in
+  // your code here
+}
+```
+
+Afterwards,  you can start using convenient methods on your model classes to interact with core data store:
 
 ```swift
 var story = Story.new()
@@ -70,13 +77,15 @@ story.save()
 Or use JsonLoadable protocol to load data from a web api:
 
 ```swift
-Story.execute { context in
+Story.execute(in: DataKit.newPrivateContext()) { context in
     print("Saving story \(id)")
     Story.insertOrUpdateOne(storyJson, in: context, idKey: "id", idColumn: "storyId", idType: Int32.self)
 }
 ```
 
 Refer to the example project for more usage examples.
+
+Please email me if you'd like more examples and/or additional features.
 
 ##License
 

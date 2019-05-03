@@ -18,7 +18,13 @@ class TableViewController: UITableViewController {
   private let session = URLSession(configuration: .ephemeral)
   private var stories: [Story] = []
   
-  private var frc: NSFetchedResultsController<Story>!
+  private lazy var frc: NSFetchedResultsController<Story> = {
+    print("creating frc")
+    let sortDescriptor = NSSortDescriptor(key: "time", ascending: false)
+    let frc = Story.fetchController(sortDescriptors: [sortDescriptor], cacheName: "TableViewController.storyCache")
+    frc.delegate = self
+    return frc
+  }()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -27,24 +33,28 @@ class TableViewController: UITableViewController {
     
     DataKit.configure({
       var config = DataKit.Configuration()
-      config.dbModel = NSManagedObjectModel(contentsOf: Bundle.main.url(forResource: "DataModel", withExtension: "momd")!)!
+//      config.dbUrl = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!.appendingPathComponent("test.db")
+      config.shouldAddStoreAsynchronously = false
       return config
     })
     
-    if USE_FRC {
-      let sortDescriptor = NSSortDescriptor(key: "time", ascending: false)
-      frc = Story.fetchController(sortDescriptors: [sortDescriptor], cacheName: "TableViewController.storyCache")
-      frc.delegate = self
-    }
-    
-    getNews() { error in
-      print("Done loading stories")
-      if let error  = error {
-        print(error)
+    DataKit.loadStores { [unowned self] error in
+      if error != nil {
+        print("Failed to load CoreData stores")
+        return
       }
-      if !self.USE_FRC {
-        Story.allAsync() { result in
-          self.stories = result.finalResult as? [Story] ?? []
+      self.getNews() { error in
+        print("Done loading stories")
+        if let error  = error {
+          print(error)
+        }
+        if !self.USE_FRC {
+          Story.allAsync() { result in
+            self.stories = result.finalResult as? [Story] ?? []
+            self.tableView.reloadSections(IndexSet(integersIn: 0..<self.tableView.numberOfSections), with: .automatic)
+          }
+        } else {
+          self.stories = self.frc.fetchedObjects ?? []
           self.tableView.reloadSections(IndexSet(integersIn: 0..<self.tableView.numberOfSections), with: .automatic)
         }
       }
@@ -56,22 +66,29 @@ class TableViewController: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//    return USE_FRC ? frc.fetchedObjects?.count ?? 0 : stories.count
     return stories.count
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")
-    let story = stories[indexPath.row]
-    cell?.textLabel?.text = story.title
-    if let time = story.time {
-      cell?.detailTextLabel?.text = DateFormatter.localizedString(from: time as Date, dateStyle: .medium, timeStyle: .medium)
-    }
+    configureCell(cell, at: indexPath)
     return cell!
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if let cell = sender as? UITableViewCell, let index = tableView.indexPath(for: cell), let svc = segue.destination as? StoryViewController {
+//      svc.story = USE_FRC ? frc.fetchedObjects?[index.row] : stories[index.row]
       svc.story = stories[index.row]
+    }
+  }
+  
+  private func configureCell(_ cell: UITableViewCell?, at indexPath: IndexPath) {
+//    let story = USE_FRC ? frc.fetchedObjects?[indexPath.row] ?? Story() : stories[indexPath.row]
+    let story = stories[indexPath.row]
+    cell?.textLabel?.text = story.title
+    if let time = story.time {
+      cell?.detailTextLabel?.text = DateFormatter.localizedString(from: time as Date, dateStyle: .medium, timeStyle: .medium)
     }
   }
   
@@ -118,12 +135,43 @@ class TableViewController: UITableViewController {
 }
 
 extension TableViewController: NSFetchedResultsControllerDelegate {
-  
+
+  func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    print("controllerWillChangeContent")
+    tableView.beginUpdates()
+  }
+
+  func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+    print("controller didChange sectionInfo")
+    switch type {
+    case .insert:
+      tableView.insertSections(IndexSet(integer: sectionIndex), with: .automatic)
+    case .delete:
+      tableView.deleteSections(IndexSet(integer: sectionIndex), with: .automatic)
+    default:
+      break
+    }
+  }
+
+  func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    print("controller didChange anObject")
+    switch type {
+    case .insert:
+      tableView.insertRows(at: [newIndexPath!], with: .automatic)
+    case .delete:
+      tableView.deleteRows(at: [indexPath!], with: .automatic)
+    case .update:
+      configureCell(tableView.cellForRow(at: indexPath!), at: indexPath!)
+    case .move:
+      tableView.deleteRows(at: [indexPath!], with: .automatic)
+      tableView.insertRows(at: [newIndexPath!], with: .automatic)
+    default:
+      break
+    }
+  }
+
   func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
     print("controllerDidChangeContent")
-    stories = frc.fetchedObjects ?? []
-//    tableView.reloadSections(IndexSet(integersIn: 0..<tableView.numberOfSections), with: .automatic)
-    tableView.reloadData()
+    tableView.endUpdates()
   }
 }
-

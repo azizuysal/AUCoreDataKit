@@ -300,11 +300,11 @@ public final class DataKit: NSObject {
     return persistentContainer.viewContext
   }
   
-  static func newPrivateContext() -> NSManagedObjectContext {
+  public static func newPrivateContext() -> NSManagedObjectContext {
     return persistentContainer.newBackgroundContext()
   }
   
-  static func performBackgroundTask(block: @escaping (NSManagedObjectContext) -> Void) {
+  public static func performBackgroundTask(block: @escaping (NSManagedObjectContext) -> Void) {
     persistentContainer.performBackgroundTask(block)
   }
 }

@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
 s.name             = "AUCoreDataKit"
-s.version          = "1.1.0.1"
+s.version          = "1.1.0.2"
 s.summary          = "An easy to use CoreData wrapper in Swift."
 s.description      = "An easy to use CoreData wrapper in Swift. Just add your CoreData model in Xcode and you're good to go!"
 s.homepage         = "https://github.com/azizuysal/AUCoreDataKit"

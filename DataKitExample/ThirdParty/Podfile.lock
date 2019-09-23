@@ -1,0 +1,16 @@
+PODS:
+  - NetKit (0.9.7.0)
+
+DEPENDENCIES:
+  - NetKit
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - NetKit
+
+SPEC CHECKSUMS:
+  NetKit: c6ac21194eace3246f1f28f9acb2449b7b30fe75
+
+PODFILE CHECKSUM: e7e196a6f9a914fb25f49a9fd26608d12b5aa63d
+
+COCOAPODS: 1.7.5

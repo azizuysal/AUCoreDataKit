@@ -1,0 +1,6 @@
+framework module NetKit {
+  umbrella header "NetKit-umbrella.h"
+
+  export *
+  module * { export * }
+}

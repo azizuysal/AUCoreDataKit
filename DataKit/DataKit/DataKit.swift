@@ -296,6 +296,14 @@ public final class DataKit: NSObject {
     }
   }
   
+  public static func deleteStore() {
+    do {
+      try persistentContainer.persistentStoreCoordinator.destroyPersistentStore(at: dbUrl, ofType: NSSQLiteStoreType, options: nil)
+    } catch let error {
+      print("Failed to delete persistent store with error: \(error)")
+    }
+  }
+  
   public static var mainContext: NSManagedObjectContext {
     return persistentContainer.viewContext
   }

@@ -7,4 +7,7 @@
    <FileRef
       location = "group:DataKitExample/DataKitExample.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:DataKitExample/ThirdParty/Pods/Pods.xcodeproj">
+   </FileRef>
 </Workspace>

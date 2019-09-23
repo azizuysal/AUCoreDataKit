@@ -38,6 +38,8 @@ class TableViewController: UITableViewController {
       return config
     })
     
+//    DataKit.deleteStore()
+    
     DataKit.loadStores { [unowned self] error in
       if error != nil {
         print("Failed to load CoreData stores")
